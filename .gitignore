@@ -1,0 +1,8 @@
+*
+!.gitignore
+
+!.config/
+!.config/home-manager/
+!.config/home-manager/**
+!.config/system-manager/
+!.config/system-manager/**

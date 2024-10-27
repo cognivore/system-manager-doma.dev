@@ -6,3 +6,7 @@
 !.config/home-manager/**
 !.config/system-manager/
 !.config/system-manager/**
+
+!.envrc
+!flake.nix
+!flake.lock

@@ -10,3 +10,6 @@
 !.envrc
 !flake.nix
 !flake.lock
+
+!2024-10-27-nginx/
+!2024-10-27-nginx/**

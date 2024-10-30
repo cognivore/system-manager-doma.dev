@@ -18,57 +18,7 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
 
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-
-    pkgs.passveil
-    pkgs.shmux
-    pkgs.system-manager
-
-    pkgs.jq
-    pkgs.curl
-    pkgs.imagemagick
-    pkgs.elan
-    pkgs.go
-
-    pkgs.pinentry-curses
-
-    # Have to be externally configured:
-    # pkgs.gnupg
-    pkgs.darcs
-    pkgs.tmux
-
-    ## To be packaged (by us?)
-    # domaPakages.passveil
-
-    # AtroNvim System Deps (we're installing nvim and astro in ad-hoc way)
-    pkgs.tree-sitter
-    pkgs.lazygit
-    pkgs.bottom
-    pkgs.python3
-    pkgs.luajitPackages.luarocks
-    # NodeJS is installed anyway
-    # NeoVim is installed as a binary release
-
-    # Install fzf
-    pkgs.fzf
-    pkgs.fzf-obc
-    pkgs.sysz
-    pkgs.tmuxPlugins.tmux-fzf
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -111,4 +61,10 @@
 
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
+
+  imports = [
+    ./services.nix
+    ./cli.nix
+    ./ergonomics.nix
+  ];
 }

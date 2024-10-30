@@ -69,6 +69,9 @@
     pkgs.fzf-obc
     pkgs.sysz
     pkgs.tmuxPlugins.tmux-fzf
+
+    # Random stuff
+    pkgs.w3m
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage

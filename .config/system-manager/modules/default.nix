@@ -51,8 +51,7 @@
 
     environment.etc = {
       "caddy/sites-enabled/localhost".text = ''
-        localhost {
-          port 8137
+        localhost:8137 {
           root * /var/www/8137
           file_server
           try_files {path} {path}/ /404.html

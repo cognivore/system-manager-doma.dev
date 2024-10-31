@@ -66,5 +66,7 @@
     ./services.nix
     ./cli.nix
     ./ergonomics.nix
+    ./purescript.nix
+    ./nix.nix
   ];
 }

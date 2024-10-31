@@ -27,6 +27,12 @@ let
       if lowerC == "f" then 15 else
       abort "Invalid hex character: ${c}";
 
+  # Function to generate color codes based on a hash
+  generateColor = name: let
+    hashValue = builtins.hashString "md5" name;
+    colorCode = parseHex (builtins.substring 0 2 hashValue);
+  in (mod colorCode 8) + 1;
+
   # Function to parse a two-character hex string to an integer
   parseHex = str:
     let
@@ -35,28 +41,19 @@ let
     in
       c1 * 16 + c2;
 
-  # Function to generate color codes based on a hash
-  generateColor = name: let
-    hashValue = builtins.hashString "md5" name;
-    colorCode = parseHex (builtins.substring 0 2 hashValue);
-  in (mod colorCode 8) + 1;
-
   # Get the hostname from the environment
-  hostname = builtins.trace (import ./hostname.nix) (import ./hostname.nix);
-
-  # Generate the color for Zsh host prompt
-  zshHostColor = generateColor hostname;
+  hostname = import ./hostname.nix;
 
   # Generate colors for Bash prompt components
   hostHash = builtins.hashString "md5" hostname;
 
-  bashUserColor = generateColor (builtins.substring 0 2 hostHash);
-  bashAtColor   = generateColor (builtins.substring 10 2 hostHash);
-  bashHostColor = generateColor (builtins.substring 0 2 hostHash);
-  bashPathColor = generateColor (builtins.substring 8 2 hostHash);
-  bashGitColor = generateColor (builtins.substring 6 2 hostHash);
-  bashTimeColor = generateColor (builtins.substring 8 2 hostHash);
-  bashLambdaColor = generateColor (builtins.substring 8 2 hostHash);
+  userColor = generateColor (builtins.substring 0 2 hostHash);
+  atColor   = generateColor (builtins.substring 10 2 hostHash);
+  hostColor = generateColor (builtins.substring 0 2 hostHash);
+  pathColor = generateColor (builtins.substring 8 2 hostHash);
+  gitColor = generateColor (builtins.substring 6 2 hostHash);
+  timeColor = generateColor (builtins.substring 8 2 hostHash);
+  lambdaColor = generateColor (builtins.substring 8 2 hostHash);
 
 in
 
@@ -72,13 +69,13 @@ in
 
   programs.bash.bashrcExtra = ''
     # Precomputed colors based on hostname
-    user_color="\$(tput setaf ${builtins.toString bashUserColor})"
-    at_color="\$(tput setaf ${builtins.toString bashAtColor})"
-    host_color="\$(tput setaf ${builtins.toString bashHostColor})"
-    path_color="\$(tput setaf ${builtins.toString bashPathColor})"
-    git_color="\$(tput setaf ${builtins.toString bashGitColor})"
-    time_color="\$(tput setaf ${builtins.toString bashTimeColor})"
-    lambda_color="\$(tput setaf ${builtins.toString bashLambdaColor})"
+    user_color="\$(tput setaf ${builtins.toString userColor})"
+    at_color="\$(tput setaf ${builtins.toString atColor})"
+    host_color="\$(tput setaf ${builtins.toString hostColor})"
+    path_color="\$(tput setaf ${builtins.toString pathColor})"
+    git_color="\$(tput setaf ${builtins.toString gitColor})"
+    time_color="\$(tput setaf ${builtins.toString timeColor})"
+    lambda_color="\$(tput setaf ${builtins.toString lambdaColor})"
     reset_color="\$(tput sgr0)"
 
     # Define PS1 components with the Nix-generated colors
@@ -189,7 +186,7 @@ in
     gcloud.symbol = mkDefault " ";
     gcloud.disabled = true; # annoying to always have on
 
-    hostname.style = "bold ansi${toString zshHostColor}";
+    hostname.style = "bold fg:${toString hostColor}";
 
     # TODO: Move symbols to another file
     memory_usage.symbol = mkDefault " ";
@@ -199,7 +196,7 @@ in
     shlvl.symbol = mkDefault " ";
     shlvl.disabled = false;
 
-    username.style_user = "bold ansi${toString zshHostColor}";
+    username.style_user = "bold fg:${toString userColor}";
   };
 
   programs.zsh = {

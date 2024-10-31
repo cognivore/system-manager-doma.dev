@@ -42,7 +42,7 @@ let
   in (mod colorCode 8) + 1;
 
   # Get the hostname from the environment
-  hostname = builtins.getEnv "HOSTNAME";
+  hostname = builtins.trace (import ./hostname.nix) (import ./hostname.nix);
 
   # Generate the color for Zsh host prompt
   zshHostColor = generateColor hostname;
@@ -51,10 +51,12 @@ let
   hostHash = builtins.hashString "md5" hostname;
 
   bashUserColor = generateColor (builtins.substring 0 2 hostHash);
-  bashAtColor   = generateColor (builtins.substring 2 2 hostHash);
-  bashHostColor = generateColor (builtins.substring 4 2 hostHash);
-  bashPathColor = generateColor (builtins.substring 6 2 hostHash);
-  bashGitColor = generateColor (builtins.substring 8 2 hostHash);
+  bashAtColor   = generateColor (builtins.substring 10 2 hostHash);
+  bashHostColor = generateColor (builtins.substring 0 2 hostHash);
+  bashPathColor = generateColor (builtins.substring 8 2 hostHash);
+  bashGitColor = generateColor (builtins.substring 6 2 hostHash);
+  bashTimeColor = generateColor (builtins.substring 8 2 hostHash);
+  bashLambdaColor = generateColor (builtins.substring 8 2 hostHash);
 
 in
 
@@ -75,15 +77,17 @@ in
     host_color="\$(tput setaf ${builtins.toString bashHostColor})"
     path_color="\$(tput setaf ${builtins.toString bashPathColor})"
     git_color="\$(tput setaf ${builtins.toString bashGitColor})"
+    time_color="\$(tput setaf ${builtins.toString bashTimeColor})"
+    lambda_color="\$(tput setaf ${builtins.toString bashLambdaColor})"
     reset_color="\$(tput sgr0)"
 
     # Define PS1 components with the Nix-generated colors
-    ps1_date="\[\$(tput bold)\]\[\$(tput setaf 40)\]\$(date +'%a %b %d %H:%M:%S:%N')"
+    ps1_date="\[\$(tput bold)\]\[''${time_color}\]\$(date +'%a %b %d %H:%M:%S:%N')"
     ps1_user="\[''${user_color}\]\u"
     ps1_at="\[''${at_color}\]@"
     ps1_host="\[''${host_color}\]\h"
     ps1_path="\[''${path_color}\]\w"
-    ps1_lambda="\[\$(tput setaf 40)\]λ\[$reset_color\]"
+    ps1_lambda="\[''${lambda_color}\]λ\[$reset_color\]"
 
     # Git prompt function
     git_prompt() {
@@ -96,6 +100,8 @@ in
 
     # Final PS1 export with deterministic colors
     export PS1="''${ps1_date} ''${ps1_user}''${ps1_at}''${ps1_host} ''${ps1_path} \$(git_prompt)\n''${ps1_lambda} "
+
+    export GPG_TTY="$(tty)"
 
     # Use vi mode in the shell
     set -o vi

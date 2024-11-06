@@ -1,5 +1,5 @@
 { pkgs, ... }:
 
 {
-  home.packages = [ pkgs.purescript pkgs.spago ];
+  home.packages = [ pkgs.purescript pkgs.spago-unstable ];
 }

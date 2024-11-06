@@ -18,16 +18,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     shmux = { url = "github:doma-engineering/shmux"; };
+    purescript-overlay.url = "github:thomashoneyman/purescript-overlay";
   };
 
-  outputs = { nixpkgs, home-manager, system-manager, passveil, shmux, ... }:
+  outputs = { nixpkgs, home-manager, system-manager, passveil, shmux, purescript-overlay, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
           system = "x86_64-linux";
           config.allowUnfree = true;
           config.allowUnfreePredicate = (_: true);
-          overlays = [ 
+          overlays = [
+              purescript-overlay.overlays.default
               (final: prev: {
                 passveil = passveil.packages.${final.system}.default;
                 shmux = shmux.packages.${final.system}.default;
